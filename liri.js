@@ -14,7 +14,10 @@ var input = process.argv[2]
 var spotifysong
 var movietitle
 
-// basic working function when typing argument in terminal - WORKS
+// standard song search count
+var w = 10
+
+// Initial working function when typing argument in terminal - WORKS
 // switch(input){
 //     case 'my-tweets':
 //     client.get('statuses/user_timeline', {screen_name: 'elonmusk'}, function(error, tweets, response) {
@@ -49,7 +52,7 @@ var movietitle
 
 // ------------------------------------------------------------------------------
 
-// Trial CODE BELOW:::::
+// API CALL with Inquirer prompts functions::::::
 
 var prompt = inq.createPromptModule()
 
@@ -111,21 +114,22 @@ var searchconfirm = [
 
 
 // Execution functions for API when called on in inquirer
-var twittercall =
+function twittercall(){
     client.get('statuses/user_timeline', { screen_name: 'elonmusk' }, function (error, tweets, response) {
         if (error) { console.log(error) }
         else {
-            for (var i = t; i < t; i++) {
+            for (var i = 0; i < t; i++) {
                 console.log(tweets[i].text);
                 console.log("------------------------")
             }
         }
     });;
+}
 // random function pulls a random song titled "I want it that way" when inquirer selection is "I'm feeling lucky"
 function random() {
     spotify.search({ type: 'track', query: 'I want it That Way' }, function (err, data) {
         if (err) { return console.log('Error occurred: ' + err); }
-        var z = Math.floor(Math.random() * 10)
+        var z = Math.floor(Math.random() * 20)
         console.log("Title: " + data.tracks.items[z].name);
         console.log("By: " + data.tracks.items[z].artists[0].name)
     });
@@ -136,9 +140,10 @@ function spotifycall() {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
-        for (var l = 0; l < 20; l++) {
+        for (var l = 0; l < w; l++) {
             console.log("Title: " + data.tracks.items[l].name)
             console.log("By: " + data.tracks.items[l].artists[0].name);
+            console.log("Song Preview: "+data.tracks.items[l].href)
             console.log("------------------------")
         }
     });
@@ -156,27 +161,32 @@ prompt(questions).then(function (r) {
     returnvalue = selection.apiaction
     switch (returnvalue) {
         case 'Search Elon Musk Tweets':
+        
             prompt(searchconfirm).then(function (value) {
-                t = parseInt(value)
-                client.get('statuses/user_timeline', { screen_name: 'elonmusk' }, function (error, tweets, response) {
-                    if (error) { console.log(error) }
-                    for (var i = t; i < t; i++) {
-                        console.log(tweets[i].text);
-                        console.log("------------------------")
-                    }
-                });;
+                t = (value.tweetcount)
+                twittercall()
             })
             break;
         case 'Find a Song on Spotify':
             prompt(spotifysearch).then(function (song) {
+                if(song.songsearch != ""){
                 spotifysong = song.songsearch
                 spotifycall()
+                }else{ 
+                    spotifysong = "The Sign Ace of Base"
+                    w = 1
+                    spotifycall()}
             })
             break;
         case 'Search a Movie':
             prompt(moviesearch).then(function (movie) {
+                if(movie.titlesearch != ""){
                 movietitle = movie.titlesearch.replace(" ", "+")
                 moviecall()
+                }else{
+                    movietitle = "Mr.+Nobody."
+                    moviecall()
+                }
             })
             break;
         case "I'm Feeling Lucky":
