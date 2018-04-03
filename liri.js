@@ -123,6 +123,7 @@ function twittercall(){
                 console.log(tweets[i].text);
                 console.log("------------------------")
             }
+            // promptcaller()
         }
     });;
 }
@@ -134,6 +135,7 @@ function random() {
         console.log("Title: " + data.tracks.items[z].name);
         console.log("By: " + data.tracks.items[z].artists[0].name)
     });
+    // promptcaller()
 }
 
 function spotifycall() {
@@ -146,12 +148,14 @@ function spotifycall() {
             console.log("By: " + data.tracks.items[l].artists[0].name);
             console.log("------------------------")
         }
+        // promptcaller()
     });
 }
 function moviecall() {
     request('http://www.omdbapi.com/?apikey=trilogy&t=' + movietitle, function (error, response, data) {
         if (error) { console.log(error) }
         console.log(JSON.parse(data))
+        // promptcaller()
     })
 }
 
